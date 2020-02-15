@@ -16,7 +16,7 @@ import toothpick.Scope
 import toothpick.Toothpick
 import javax.inject.Inject
 
-abstract class FlowFragment : BaseFragment() {
+abstract class BaseFlowFragment : BaseFragment() {
 
     override val layoutRes: Int = R.layout.layout_container
 

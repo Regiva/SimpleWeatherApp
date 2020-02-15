@@ -3,11 +3,9 @@ package com.regiva.simple_weather_app.ui.main
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import com.regiva.simple_weather_app.R
-import com.regiva.simple_weather_app.Screens
 import com.regiva.simple_weather_app.ui.base.BaseFragment
-import com.regiva.simple_weather_app.ui.base.FlowFragment
+import com.regiva.simple_weather_app.ui.base.BaseFlowFragment
 import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class MainFragment : BaseFragment() {
 
@@ -32,8 +30,8 @@ class MainFragment : BaseFragment() {
     override val layoutRes: Int
         get() = R.layout.fragment_main
 
-    private val currentTabFragment: FlowFragment?
-        get() = childFragmentManager.fragments.firstOrNull { !it.isHidden } as? FlowFragment
+    private val currentTabFragmentBase: BaseFlowFragment?
+        get() = childFragmentManager.fragments.firstOrNull { !it.isHidden } as? BaseFlowFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +41,6 @@ class MainFragment : BaseFragment() {
     }
 
     override fun onBackPressed() {
-        currentTabFragment?.onBackPressed()
+        currentTabFragmentBase?.onBackPressed()
     }
 }

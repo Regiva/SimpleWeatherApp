@@ -26,6 +26,6 @@ class AppLauncher @Inject constructor(
             router.newRootScreen(Screens.Main())
         else
             router.newRootScreen(Screens.AuthFlow)*/
-        router.newRootScreen(Screens.AuthFlow)
+        router.newRootScreen(Screens.HomeFlow)
     }
 }

@@ -9,6 +9,7 @@ class Prefs @Inject constructor(
     private val gson: Gson
 ) {
 
+    //todo
     private fun getSharedPreferences(prefsName: String) =
         context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 

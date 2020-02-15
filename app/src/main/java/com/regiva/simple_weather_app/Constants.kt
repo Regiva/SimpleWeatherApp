@@ -4,8 +4,7 @@ object Constants {
 
     // api constants
     object Api {
-        const val API_VERSION = "5.60"
-        const val APP_ID = "7301530"
-        const val BASE_URL = "api.openweathermap.org/data/2.5/forecast"
+        const val API_KEY = "96a8cb42a9246d565baf6fd44d526b7b"
+        const val BASE_URL = "https://api.openweathermap.org/data/2.5/forecast"
     }
 }
