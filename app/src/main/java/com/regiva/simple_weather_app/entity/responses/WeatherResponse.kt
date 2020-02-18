@@ -8,18 +8,21 @@ data class WeatherResponse(
     val cod: Int,
     val message: Float,
     val cnt: Int,
-    val list: List<OneDayWeatherEntity>
+    val list: List<OneDayWeatherEntity>,
+    val city: CityEntity
 )
 
 data class OneDayWeatherEntity(
     @SerializedName("dt") val date: Long,
     @SerializedName("main") val mainInfo: MainInfoEntity,
-    @SerializedName("weather") val weather: WeatherEntity,
+    @SerializedName("weather") val weather: List<WeatherEntity>,
     @SerializedName("clouds") val clouds: CloudsEntity,
     @SerializedName("wind") val wind: WindEntity,
     @SerializedName("sys") val sys: SysEntity,
     @SerializedName("dt_txt") val dateText: String
 )
+
+// "city":{"id":551487,"name":"Kazan","coord":{"lat":55.7887,"lon":49.1221},"country":"RU","population":1104738,"timezone":10800,"sunrise":1582084861,"sunset":1582120447}
 
 data class MainInfoEntity(
     val temp: Float,
@@ -50,6 +53,14 @@ data class WindEntity(
 
 data class SysEntity(
     val pod: String
+)
+
+data class CityEntity(
+    val id: Long,
+    val name: String,
+//    val coord:
+    val sunrise: Long,
+    val sunset: Long
 )
 
 /*{

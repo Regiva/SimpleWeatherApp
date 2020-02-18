@@ -1,6 +1,7 @@
 package com.regiva.simple_weather_app
 
 import com.regiva.simple_weather_app.ui.home.HomeFlowFragment
+import com.regiva.simple_weather_app.ui.home.HomeFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object Screens {
@@ -14,7 +15,6 @@ object Screens {
     }
 
     //screens
-
     object Home : SupportAppScreen() {
         override fun getFragment() = HomeFragment()
     }

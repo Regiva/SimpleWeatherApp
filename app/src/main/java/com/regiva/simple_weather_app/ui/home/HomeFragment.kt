@@ -3,31 +3,34 @@ package com.regiva.simple_weather_app.ui.home
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.badoo.mvicore.android.AndroidBindings
 import com.badoo.mvicore.binder.using
 import com.badoo.mvicore.modelWatcher
+import com.bumptech.glide.Glide
 import com.regiva.simple_weather_app.R
-import com.regiva.simple_weather_app.model.system.FlowRouter
-import com.regiva.simple_weather_app.ui.base.BaseFragment
+import com.regiva.simple_weather_app.entity.responses.CityEntity
+import com.regiva.simple_weather_app.entity.responses.OneDayWeatherEntity
+import com.regiva.simple_weather_app.model.data.feature.HomeFeature
 import com.regiva.simple_weather_app.ui.base.MviFragment
+import com.regiva.simple_weather_app.ui.home.adapter.DaysAdapter
 import com.regiva.simple_weather_app.util.ErrorHandler
+import com.regiva.simple_weather_app.util.convertToDateFormat
+import com.regiva.simple_weather_app.util.setLoadingState
+import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.fragment_home.*
+import java.util.*
+import kotlin.math.roundToInt
 
 class HomeFragment : MviFragment<HomeFragment.ViewModel, HomeFragment.UiEvents>() {
 
     override val layoutRes: Int
         get() = R.layout.fragment_home
 
-    private val flowRouter: FlowRouter by scope()
-//    private val feature: PostsFeature by scope()
+    private val feature: HomeFeature by scope()
     private val errorHandler: ErrorHandler by scope()
-//    private val adapter: PostsAdapter by lazy {
-//        PostsAdapter(
-//            listOf(),
-//            { onNext(UiEvents.OnLikeClicked(it.isLiked, it.source.id, it.post_id)) },
-//            { flowRouter.navigateTo(Screens.DetailedPost(it)) }
-//        )
-//    }
+    private val adapter: DaysAdapter by lazy {
+        DaysAdapter(listOf())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,78 +39,81 @@ class HomeFragment : MviFragment<HomeFragment.ViewModel, HomeFragment.UiEvents>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        initRecycler()
-//        onNext(UiEvents.OnGetNewsFeed)
+        initRecycler()
+        onNext(UiEvents.OnGetWeather)
     }
 
     private fun setUpBindings() {
-        /*object : AndroidBindings<HomeFragment>(this) {
+        object : AndroidBindings<HomeFragment>(this) {
             override fun setup(view: HomeFragment) {
                 binder.bind(view to feature using { event ->
                     when (event) {
-                        is UiEvents.OnGetNewsFeed -> PostsFeature.Wish.GetAllPosts
-                        is UiEvents.OnLikeClicked -> PostsFeature.Wish.LikePost(event.isLiked, event.owner_id, event.item_id)
+                        is UiEvents.OnGetWeather -> HomeFeature.Wish.GetWeather
                     }
                 })
                 binder.bind(feature to view using { state ->
                     ViewModel(
                         state.isLoading,
-                        state.posts
+                        state.weatherForFiveDays
                     )
                 })
                 binder.bind(feature.news to Consumer { news ->
                     when (news) {
-                        is PostsFeature.News.GetAllPostsFailure -> errorHandler.proceed(news.throwable) { view.showError(it) }
-                        is PostsFeature.News.LikePostFailure -> errorHandler.proceed(news.throwable) { view.showError(it) }
+                        is HomeFeature.News.GetWeatherFailure -> errorHandler.proceed(news.throwable) { view.showError(it) }
                     }
                 })
             }
-        }.setup(this)*/
+        }.setup(this)
     }
 
     private fun initRecycler() {
-//        rv_posts.layoutManager = LinearLayoutManager(activity)
-//        rv_posts.adapter = adapter
-//        rv_posts.setOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                val totalItemCount = (recyclerView.layoutManager as LinearLayoutManager).itemCount
-//                val lastVisibleItem = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-//                if (isLoadingMore != true && lastVisibleItem == totalItemCount - 1) {
-//                    onNext(UiEvents.OnGetNewsFeed)
-//                    isLoadingMore = true
-//                }
-//            }
-//
-//        })
+        rv_days.layoutManager = LinearLayoutManager(activity)
+        rv_days.adapter = adapter
     }
 
-//    private fun showPosts(posts: List<PostModel>) {
-//        if (posts.isNotEmpty()) {
-//            adapter.updateList(posts)
+    private fun showWeather(weatherForFiveDays: Pair<List<OneDayWeatherEntity>, CityEntity>) {
+        if (weatherForFiveDays.first.isNotEmpty()) {
+            with (weatherForFiveDays.first.first()) {
+                //todo time
+                tv_updated_at.text = Date().time.div(100).convertToDateFormat("dd MMMM yyyy, HH:mm")
+                tv_current_temp.text = "${this.mainInfo.temp.roundToInt()}°"
+                tv_status.text = this.weather.first().main
+                tv_temp_min.text = "Min: ${this.mainInfo.temp_min.roundToInt()}°"
+                tv_temp_max.text = "Max: ${this.mainInfo.temp_max.roundToInt()}°"
+                tv_sunrise.text = weatherForFiveDays.second.sunrise.convertToDateFormat("HH:mm")
+                tv_sunset.text = weatherForFiveDays.second.sunset.convertToDateFormat("HH:mm")
+                tv_wind.text = "${this.wind.speed.roundToInt()} km/h"
+                tv_pressure.text = "${this.mainInfo.pressure.roundToInt()}"
+
+                Glide.with(requireContext())
+                    .load("https://openweathermap.org/img/wn/" + this.weather.first().icon + "@2x.png")
+                    .into(iv_status)
+            }
+            tv_city.text = weatherForFiveDays.second.name
+            adapter.updateList(weatherForFiveDays.first)
 //            rl_posts_not_empty?.setVisible()
 //            rl_posts_empty?.setGone()
-//        }
-//        else {
+        }
+        else {
 //            rl_posts_empty?.setVisible()
 //            rl_posts_not_empty?.setGone()
-//        }
-//    }
+        }
+    }
 
     override fun accept(vm: ViewModel) {
         modelWatcher<ViewModel> {
             watch(ViewModel::isLoading) { pb_loading?.setLoadingState(it) }
+            watch(ViewModel::weatherForFiveDays) { it?.let { showWeather(it) } }
         }.invoke(vm)
     }
 
     sealed class UiEvents {
-        object OnGetNewsFeed : UiEvents()
-        data class OnLikeClicked(val isLiked: Boolean, val owner_id: Long, val item_id: Long) : UiEvents()
+        object OnGetWeather : UiEvents()
     }
 
     class ViewModel(
         val isLoading: Boolean,
-        val posts: List<PostModel>?
+        val weatherForFiveDays: Pair<List<OneDayWeatherEntity>, CityEntity>?
     )
 }
 

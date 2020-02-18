@@ -9,8 +9,8 @@ import toothpick.Toothpick
 import javax.inject.Inject
 
 class AppLauncher @Inject constructor(
-    private val router: Router,
-    private val authInteractor: AuthInteractor
+    private val router: Router/*,
+    private val authInteractor: AuthInteractor*/
 ) {
 
     fun initModules() {

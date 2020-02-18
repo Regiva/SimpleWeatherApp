@@ -2,6 +2,7 @@ package com.regiva.simple_weather_app.di.provider
 
 import android.content.Context
 import com.regiva.simple_weather_app.BuildConfig
+import com.regiva.simple_weather_app.model.data.network.interceptor.OpenWeatherInterceptor
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -19,6 +20,7 @@ class OkHttpClientProvider @Inject constructor(
         cache(Cache(context.cacheDir, CACHE_SIZE_BYTES))
         connectTimeout(TIMEOUT, TimeUnit.SECONDS)
         readTimeout(TIMEOUT, TimeUnit.SECONDS)
+        addInterceptor(OpenWeatherInterceptor())
         if (BuildConfig.DEBUG) {
             addNetworkInterceptor(
                 HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }

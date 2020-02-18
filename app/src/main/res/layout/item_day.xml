@@ -3,23 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:gravity="center_vertical">
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:paddingStart="8dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="8dp">
 
     <TextView
         android:id="@+id/tv_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         tools:text="shabbat 2:00"
         android:textSize="18sp"
         style="@style/textStyle"/>
 
     <ImageView
         android:id="@+id/iv_status"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerInParent="true"
         tools:src="@drawable/humidity"
         android:tint="#FFFFFF"/>
 
@@ -35,5 +38,11 @@
         style="@style/textStyle"
         android:layout_marginLeft="8dp"
         android:layout_alignParentRight="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/aqua"/>
 
 </RelativeLayout>
